@@ -2,5 +2,6 @@
 
 [ModuleSettings]
 ExtensionRepositories[]=mbpaex
+ModuleList[]=userpaex
 
 */ ?>

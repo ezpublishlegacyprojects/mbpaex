@@ -41,19 +41,19 @@
     <div class="block">
         {if $oldPasswordNotValid}*{/if}
         <label>{"Old password"|i18n("mbpaex/userpaex")}</label><div class="labelbreak"></div>
-        <input class="halfbox" type="password" name="oldPassword" size="11" value="{$oldPassword}" />
+        <input type="password" name="oldPassword" size="11" value="{$oldPassword}" />
     </div>
     
     <div class="block">
         <div class="element">
             {if or($newPasswordNotMatch,$newPasswordNotValidate)}*{/if}
             <label>{"New password"|i18n("mbpaex/userpaex")}</label><div class="labelbreak"></div>
-            <input class="halfbox" type="password" name="newPassword" size="11" value="{$newPassword}" />
+            <input type="password" name="newPassword" size="11" value="{$newPassword}" />
         </div>
         <div class="element">
             {if or($newPasswordNotMatch,$newPasswordNotValidate)}*{/if}
             <label>{"Retype password"|i18n("mbpaex/userpaex")}</label><div class="labelbreak"></div>
-            <input class="halfbox" type="password" name="confirmPassword" size="11" value="{$confirmPassword}" />
+            <input type="password" name="confirmPassword" size="11" value="{$confirmPassword}" />
         </div>
         <div class="break"></div>
     </div>

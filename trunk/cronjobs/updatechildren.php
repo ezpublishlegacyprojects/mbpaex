@@ -7,7 +7,7 @@
  * @package mbpaex
  */
 
-$mbpaex_ini = eZINI::instance('mbpaex.ini');
+$mbpaexIni = eZINI::instance('mbpaex.ini');
 // Fetch the user to use in the process
 $updateChildrenUser = $mbpaexIni->variable( 'mbpaexSettings','UpdateChildrenUser' );
 // Default to admin if user is not found in the ini
@@ -51,7 +51,7 @@ if ( $user->isLoggedIn() )
             $objectDepthList[0][$key] = $node["depth"];
             $objectDepthList[1][$key] = $node["contentobject_id"];
         }
-        // Sort object_depth_list by depth to apply updatechildren in the right order
+        // Sort objectDepthList by depth to apply updatechildren in the right order
         if ( !array_multisort( $objectDepthList[0], SORT_ASC, $objectDepthList[1], SORT_ASC ) )
         {
             eZDebug::writeError( 'Error in array_multisort', 'updatechildren.php' );
@@ -60,7 +60,7 @@ if ( $user->isLoggedIn() )
         {
             // Generate array of paex objects to update
             $paex_object_array = array();
-            foreach ( $object_depth_list[1] as $contentobjectId )
+            foreach ( $objectDepthList[1] as $contentobjectId )
             {
                 if ( isset( $pending_list[$contentobjectId] ) )
                 {

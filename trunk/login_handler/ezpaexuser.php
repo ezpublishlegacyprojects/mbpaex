@@ -29,11 +29,26 @@ class eZPaExUser extends eZUser
     protected static $changePasswordFormURL = "/userpaex/password/";
 
     /**
+     * Pure wrapper for eZUser::__construct( $row ). Used to mute errors due to the absence of $row as parameter,
+     * when called from eZUserLoginHandler::instance(), while according to the signature of eZUser::eZUser(), $row
+     * is not optional.
+     * This should be removed as soon as eZUser::eZUser() is fixed.
+     *
+     * @param string $row eZPersistenObject-compliant data row.
+     * @see eZUser::eZUser()
+     *
+     */
+    public function __construct( $row = null )
+    {
+        @parent::eZUser( $row );
+    }
+
+    /**
      * Logs in the user if applied login and password is valid.
      *
-     * @param string $login 
-     * @param string $password 
-     * @param bool $authenticationMatch 
+     * @param string $login
+     * @param string $password
+     * @param bool $authenticationMatch
      * @return mixed eZUser or false
      */
     public static function loginUser( $login, $password, $authenticationMatch = false )
@@ -67,7 +82,7 @@ class eZPaExUser extends eZUser
     /**
      * Writes audit information and redirects the user to the password change form.
      *
-     * @param eZUser $user 
+     * @param eZUser $user
      */
     protected static function passwordHasExpired( $user )
     {
@@ -88,9 +103,9 @@ class eZPaExUser extends eZUser
     }
 
     /**
-     * Performs a redirect to the password change form 
+     * Performs a redirect to the password change form
      *
-     * @param int $userID 
+     * @param int $userID
      */
     protected static function redirectToChangePasswordForm( $userID )
     {

@@ -1,5 +1,5 @@
-Password Expiration Extension
-=============================
+Password Expiration Extension (v1.0RC1)
+================================================
 
 0) Release Info
 1) Install
@@ -8,28 +8,30 @@ Password Expiration Extension
 4) UpdateChildren feature
 5) "Password about to Expire" notification
 6) Audit logs
-7) TODO list
-8) About
-9) Known issues
+7) Hook for mbtoken usage
+8) TODO list
+9) RFE
+10) About
 
-Release Info
--------------
+0. Release Info
+   ------------
 
-Compatible with eZ Publish 4.1 and newer.
+Current version: mbPaEx_1.0RC1
+Release Date: Feb 11, 2009.
+
+Compatible with eZ Publish v4.x
 
 
-Install
--------
+1. Install
+   -------
 
 - Put the mbpaex folder inside your extension folder
 
-- Update the eZ Publish database, from the root of the site:
+- Update the ezpublish database, execute from <ezroot>:
 
-    $ mysql -u <username> -p<password> <ezdatabase> < extension/mbpaex/mysql/mbpaex.sql
+    $ mysql -u <username> -p<password> <ezdatabase> < extension/mbpaex/install/sql/mbpaex.sql
 
-  If you're using PostgreSQL use the extension/mbpaex/sql/postgresql/mbpaex.sql file instead.
-
-- Customize the default settings in 
+- Customize default settings in 
   extension/mbpaex/settings/mbpaex.ini (or an override):
 
     [mbpaexSettings]
@@ -58,27 +60,46 @@ Install
     
     ActiveExtensions[]=mbpaex
     
-- Setup the override template used in replacement of node/view/full.tpl to display
+- To prevent undesired access to default user module views that don't take care about the
+  password expiration settings there should only be enabled the views needed, then standard 
+  ones will get access denied. These changes should be added to the global override of
+  site.ini:
+
+	[SiteAccessSettings]
+	AnonymousAccessList[]
+	AnonymousAccessList[]=user/success
+	AnonymousAccessList[]=user/activate
+	AnonymousAccessList[]=userpaex/password
+	AnonymousAccessList[]=userpaex/forgotpassword
+
+	[RoleSettings]
+	PolicyOmitList[]
+	PolicyOmitList[]=user/login
+	PolicyOmitList[]=user/logout
+	PolicyOmitList[]=userpaex/password
+	PolicyOmitList[]=userpaex/forgotpassword
+
+- Setup override template used in replacement of node/view/full.tpl to display
   users and users groups in admin interface:
   
-  Inside the <ezroot>/extension/mbpaex/settings/siteaccess you will find a folder
+  Inside <ezroot>/extension/mbpaex/settings/siteaccess you will find a folder
   that will be used in the "admin" siteaccess. If your admin siteaccess has a 
   different name, the content of the override.ini.append.php file must be added 
   to the override.ini of your custom admin siteaccess.
   
-- Re-generate the autoloads array to include new classes present in the extension:
+- Re-generate autoloads array to include new classes present in mbPaEx extension:
 
     $ bin/php/ezpgenerateautoloads.php --extension
     
 - Clear all caches
 
 
-Brief usage instructions
-------------------------
+2. Brief usage instructions
+   ------------------------
 
-After installation, a new data type would be available to add as an attribute in 
+After installation, a new dataye would be available to add as an attribute in 
 the User and User Group classes, "Password Expiration". You should add a new 
-attribute to your classes using this new data type for the system to behave correctly.
+attribute to your classes using this new datype for the system to behave correctly.
 
 When the attribute gets created it takes the values set in the ini file as default
 values.
@@ -117,8 +138,8 @@ If the user have "editpaex" permission, the values entered in the form will be u
 to use values set in parent, these fields must be cleared.
 
 
-Forgot password procedure
---------------------------
+3. Forgot password procedure
+   -------------------------
 
 There is a new view in the userpaex module, forgotpassword, to manage the forgot
 password function. 
@@ -137,8 +158,8 @@ Has small modifications from the eZ one, to note:
   will be removed, so only the last key generated is valid.
 
 
-UpdateChildren feature
------------------------
+4. UpdateChildren feature
+   ----------------------
 
 In order to prevent failures during the process and to make the user edit process 
 quicker, the update children has moved to a cronjob, so a new cronjob task has to
@@ -147,7 +168,7 @@ The cronjob part defined to do the actual update of the children is "updatechild
 
 The cronjob can be manually run with the following command from <ezroot> folder:
 
-    $ php runcronjobs.php updatechildren
+    $php runcronjobs.php updatechildren
 
 When a node is marked to update his children, a notification text will be shown 
 in the admin view template for that node.
@@ -162,8 +183,8 @@ children will be updated with his data.
 It's ok to set up the cronjob to be run in the frequent cronjob part.
 
 
-"Password about to Expire" notification
----------------------------------------
+5. "Password about to Expire" notification
+   ---------------------------------------
 
 Optionally if you want your users get notified when their password is about to 
 expire, a new cronjob can be set up to search users based on their password last 
@@ -179,58 +200,58 @@ Only one notification sent to each user, and no more notifications are sent unti
 the user changes his password and it expires again.
 
 
-Audit logs
-----------
+6. Audit logs
+   ----------
 
 In order to enhance security new audit functions have been defined for mbpaex operations
 that can be enabled in an override for the audit.ini settings file:
 
-- user-password-change
+-   user-password-change
 
     Logs pasword changes made to third party accounts (admin changing password for a
     user)
 
-- user-password-change-self
+-   user-password-change-self
 
     Logs when users change their own password
 
-- user-password-change-self-fail
+-   user-password-change-self-fail
 
     Logs when users try to change their own password and send wrong current password
 
-- user-forgotpassword
+-   user-forgotpassword
 
     User has made use of the forgotpassword function of userpaex module
 
-- user-forgotpassword-fail
+-   user-forgotpassword-fail
 
     User tries to made use of the forgotpassword function of userpaex module but
     some error occurred (the actual error is also logged)
 
+7. Hook for mbtoken usage
+   ----------------------
 
-TODO list
----------
+The loginhandler has been updated to include the possibility to use the mbtoken extension,
+that will add extra security to the login process by the use of a security token.
+More info available in mbtoken extension.
 
-- Prevent user enter same password that have set, when editing user contentobject
+
+8. TODO list
+   ---------
+
+- Prevent user enter same password that have set, when editting user contentobject
   from admin interface (I think that password history has to be implemented to do 
   this).
 
 
-About mbpaex
-------------
+9. Request for enhancement
+   ------------------------
+
+- Password history 
+
+   
+10. About mbpaex
+    ------------
 
 This extension was developed by Microblau with eZ Systems support.
 
-
-Known issues
-------------
-
-This extension will not work on the admin siteaccess, or any siteaccess that has
-the following ini configuration:
-
-    [SiteAccessSettings]
-    RequireUserLogin=true
-    
-It doesn't work because if the password has expired the user will be taked to the
-'/userpaex/password/' view which the user can't access without logging in first 
-when RequireUserLogin=true.

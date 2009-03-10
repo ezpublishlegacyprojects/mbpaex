@@ -71,7 +71,7 @@ if ( $module->isCurrentAction( "Generate" ) )
     $password = eZUser::createPassword( $passwordLength );
     $passwordConfirm = $password;
 
-    if ( $module->hasActionParameter( "Email" ) )
+    if ( $module->hasActionParameter( "Email" ) && eZMail::validate($module->actionParameter( "Email" )) )
     {
         $email = $module->actionParameter( "Email" );
         if ( trim( $email ) != "" )

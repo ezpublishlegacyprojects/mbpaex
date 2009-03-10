@@ -172,4 +172,12 @@ $Result['path'] = array( array( 'text' => ezi18n( 'kernel/user', 'User' ),
                                 'url' => false ) );
 $Result['content'] = $tpl->fetch( "design:userpaex/password.tpl" );
 
+$currentuser = eZUser::currentUser();
+if ( !$currentuser->isLoggedIn() )
+{
+   if ( $ini->variable( 'SiteSettings', 'LoginPage' ) == 'custom' )
+   {
+       $Result['pagelayout'] = 'loginpagelayout.tpl';
+   }
+}
 ?>
